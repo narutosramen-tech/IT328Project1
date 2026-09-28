@@ -35,3 +35,14 @@ class SymbolNode(RegexNode):
         @return: The underlying regex symbol string.
         """
         return str(self.symbol)
+
+    def __eq__(self, other: object) -> bool:
+        """
+        Determine if this symbol node is equal to another symbol node.
+
+        @param other: The object to compare against.
+        @return: True if the other object is a SymbolNode with the same symbol, False otherwise.
+        """
+        if not isinstance(other, SymbolNode):
+            return False
+        return self.symbol == other.symbol
