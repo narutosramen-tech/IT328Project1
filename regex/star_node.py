@@ -5,6 +5,7 @@ All code was written by students and all comments were written by AI.
 """
 
 from .unary_node import UnaryNode
+from .regex_node import RegexNode
 
 
 class StarNode(UnaryNode):
@@ -20,7 +21,7 @@ class StarNode(UnaryNode):
 
     precedence: int = 3
 
-    def __init__(self, child: UnaryNode) -> None:
+    def __init__(self, child: RegexNode) -> None:
         """
         Create a star node around a unary regex operand.
 
@@ -42,3 +43,14 @@ class StarNode(UnaryNode):
             child_str = f"({child_str})"
 
         return f"{child_str}*"
+
+    def __eq__(self, other: object) -> bool:
+        """
+        Determine if this star node is equal to another star node.
+
+        @param other: The object to compare against.
+        @return: True if the other object is a StarNode with the same child, False otherwise.
+        """
+        if not isinstance(other, StarNode):
+            return False
+        return self.child == other.child

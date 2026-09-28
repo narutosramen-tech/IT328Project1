@@ -49,3 +49,14 @@ class ConcatNode(BinaryNode):
             right = f"({right})"
 
         return f"{left}{right}"
+
+    def __eq__(self, other: object) -> bool:
+        """
+        Determine if this concatenation node is equal to another concatenation node.
+
+        @param other: The object to compare against.
+        @return: True if the other object is a ConcatNode with the same left and right children, False otherwise.
+        """
+        if not isinstance(other, ConcatNode):
+            return False
+        return self.left == other.left and self.right == other.right

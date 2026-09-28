@@ -34,6 +34,20 @@ class UnionNode(BinaryNode):
         """
         Return the regex string for a union expression.
 
-        @return: The union formatted as (left U right).
+        @return: The union formatted as left U right.
         """
-        return f"({self.left}U{self.right})"
+        return f"{self.left}U{self.right}"
+
+    def __eq__(self, other: object) -> bool:
+        """
+        Determine if this union node is equal to another union node.
+
+        @param other: The object to compare against.
+        @return: True if the other object is a UnionNode containing the same two child expressions, regardless of order.
+        """
+        if not isinstance(other, UnionNode):
+            return False
+        return (
+            (self.left == other.left and self.right == other.right)
+            or (self.left == other.right and self.right == other.left)
+        )
