@@ -11,7 +11,8 @@ from typing import Optional
 
 
 class Automaton:
-    """An implementation neutral automaton that can be either a NFA or a GNFA.
+    """
+    An implementation neutral automaton that can be either an NFA or a GNFA.
 
     Attributes:
         states (list[State]): A list of all states in the automaton.
@@ -22,32 +23,68 @@ class Automaton:
     transitions: list[Transition]
     start_state: Optional[State]
 
-    def __init__(self) -> None:
+    def __init__(
+            self
+        ) -> None:
+        """
+        Create an empty automaton with no states, transitions, or start state.
+        """
         self.states = []
         self.transitions = []
         self.start_state = None
 
-    def get_state(self, name: int) -> Optional[State]:
+    def get_state(
+            self,
+            name: int
+        ) -> Optional[State]:
+        """
+        Find a state by its numeric name.
+
+        Args:
+            name (int): The numeric name of the state to find.
+
+        Returns:
+            Optional[State]: The matching state, or None if no state with the specified name exists.
+        """
         return next((s for s in self.states if s.name == name), None)
 
-    def get_transitions(self, start_name: int, end_name: int) -> list[Transition]:
+    def get_transitions(
+            self,
+            start_name: int,
+            end_name: int
+        ) -> list[Transition]:
+        """
+        Find all transitions between two states.
+
+        Args:
+            start_name (int): The numeric name of the starting state.
+            end_name (int): The numeric name of the ending state.
+
+        Returns:
+            list[Transition]: A list of transitions from the starting state to the
+                ending state. The list is empty if no transitions exist.
+        """
         return [t for t in self.transitions if t.start.name == start_name and t.end.name == end_name]
 
-#    def get_specific_transitions(self, start_name: int, end_name: int) -> list[Transition]:
-#        start_state = self.get_state(start_name)
-#        end_state = self.get_state(end_name)
-#
-#        results = []
-#        if start_state is None or end_state is None:
-#            return results
-#        
-#        for t in self.transitions:
-#            if t.start == start_state and t.end == end_state:
-#                results.append(t)
-#
-#        return results
+    def add_state(
+            self,
+            name: int,
+            is_accepting: bool = False
+        ) -> State:
+        """
+        Add a new state to the automaton.
 
-    def add_state(self, name: int, is_accepting: bool = False) -> State:
+        Args:
+            name (int): The numeric name of the new state.
+            is_accepting (bool, optional): Whether the new state is
+                an accepting state. Defaults to False.
+
+        Raises:
+            ValueError: If a state with the specified name already exists.
+
+        Returns:
+            State: The newly created state.
+        """
         state = State(name, is_accepting)
 
         if state not in self.states:
@@ -56,20 +93,47 @@ class Automaton:
             raise ValueError(f"State with name {name} already exists.")
         return state
 
-    def set_start_state(self, name: int) -> None:
+    def set_start_state(
+            self,
+            name: int
+        ) -> None:
+        """
+        Set an existing state as the start state.
+
+        Args:
+            name (int): The numeric name of the state to make the start state.
+
+        Raises:
+            ValueError: If no state with the specified name exists.
+        """
         state = self.get_state(name)
 
         if state is None:
             raise ValueError(f"State with name {name} does not exist.")
-        
+
         self.start_state = state
 
-    def remove_state(self, name: int) -> None:
+    def remove_state(
+            self,
+            name: int
+        ) -> None:
+        """
+        Remove a state and all transitions connected to it.
+
+        If the removed state is the current start state, the automaton's start
+        state is reset to None.
+
+        Args:
+            name (int): The numeric name of the state to remove.
+
+        Raises:
+            ValueError: If no state with the specified name exists.
+        """
         state = self.get_state(name)
 
         if state is None:
             raise ValueError(f"State with name {name} does not exist.")
-        
+
         if state in self.states:
             self.states.remove(state)
             self.transitions = [t for t in self.transitions if t.start != state and t.end != state]
@@ -77,7 +141,27 @@ class Automaton:
             if self.start_state == state:
                 self.start_state = None
 
-    def add_transition(self, start_name: int, end_name: int, expression: RegularExpression) -> Transition:
+    def add_transition(
+            self,
+            start_name: int,
+            end_name: int,
+            expression: RegularExpression
+        ) -> Transition:
+        """
+        Add a transition between two existing states.
+
+        Args:
+            start_name (int): The numeric name of the starting state.
+            end_name (int): The numeric name of the ending state.
+            expression (RegularExpression): The regular expression labeling the transition.
+
+        Raises:
+            ValueError: If either the starting or ending state does not exist.
+
+        Returns:
+            Transition: The newly created transition.
+        """
+
         start_state = self.get_state(start_name)
         end_state = self.get_state(end_name)
 
@@ -88,39 +172,106 @@ class Automaton:
         self.transitions.append(transition)
         return transition
 
-    def remove_transition(self, start_name: int, end_name: int) -> None:
+    def remove_transition(
+            self,
+            start_name: int,
+            end_name: int
+        ) -> None:
+        """
+        Remove all transitions between two states.
+
+        Args:
+            start_name (int): The numeric name of the starting state.
+            end_name (int): The numeric name of the ending state.
+
+        Raises:
+            ValueError: If no transitions exist between the specified states.
+        """
         transitions = self.get_transitions(start_name, end_name)
 
         if not transitions:
             raise ValueError("No transitions found for the given start and end states.")
-        
+
         for transition in transitions:
             if transition in self.transitions:
                 self.transitions.remove(transition)
 
-    def get_accepting_states(self) -> list[State]:
+    def get_accepting_states(
+            self
+        ) -> list[State]:
+        """
+        Find all accepting states in the automaton.
+
+        Returns:
+            list[State]: A list containing all of the accepting states.
+        """
         return [s for s in self.states if s.is_accepting]
 
-    def get_incoming_transitions(self, state_name: int) -> list[Transition]:
+    def get_incoming_transitions(
+            self,
+            state_name: int
+        ) -> list[Transition]:
+        """
+        Find all non-self-loop transitions entering a state.
+
+        Args:
+            state_name (int): The numeric name of the destination state.
+
+        Raises:
+            ValueError: If the specified state does not exist.
+
+        Returns:
+            list[Transition]: A list of transitions entering the specified state, excluding self-loops.
+        """
         state = self.get_state(state_name)
 
         if state is None:
             raise ValueError("State does not exist.")
-        
+
         return [t for t in self.transitions if t.end == state and t.start != state]
 
-    def get_outgoing_transitions(self, state_name: int) -> list[Transition]:
+    def get_outgoing_transitions(
+            self,
+            state_name: int
+        ) -> list[Transition]:
+        """
+        Find all non-self-loop transitions leaving a state.
+
+        Args:
+            state_name (int): The numeric name of the source state.
+
+        Raises:
+            ValueError: If the specified state does not exist.
+
+        Returns:
+            list[Transition]: The outgoing transitions, excluding self-loops.
+        """
         state = self.get_state(state_name)
 
         if state is None:
             raise ValueError("State does not exist.")
-        
+
         return [t for t in self.transitions if t.start == state and t.end != state]
 
-    def get_self_loops(self, state_name: int) -> list[Transition]:
+    def get_self_loops(
+            self,
+            state_name: int
+        ) -> list[Transition]:
+        """
+        Find all self-loop transitions on a state.
+
+        Args:
+            state_name (int): The numeric name of the state.
+
+        Raises:
+            ValueError: If the specified state does not exist.
+
+        Returns:
+            list[Transition]: The transitions that start and end at this state.
+        """
         state = self.get_state(state_name)
 
         if state is None:
             raise ValueError("State does not exist.")
-        
+
         return [t for t in self.transitions if t.start == state and t.end == state]

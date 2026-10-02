@@ -21,23 +21,35 @@ class ConcatNode(BinaryNode):
 
     precedence: int = 2
 
-    def __init__(self, left: RegexNode, right: RegexNode) -> None:
+    def __init__(
+            self,
+            left: RegexNode,
+            right: RegexNode
+        ) -> None:
         """
         Create a concatenation node around two regex fragments.
 
-        @param left: The left expression in the concatenation.
-        @param right: The right expression in the concatenation.
+        Args:
+            left (RegexNode): The left expression in the concatenation.
+            right (RegexNode): The right expression in the concatenation.
+
+        Raises:
+            ValueError: If either child is None.
+            TypeError: If either child is not a RegexNode instance.
         """
         super().__init__(left, right)
 
-    def __str__(self) -> str:
+    def __str__(
+            self
+        ) -> str:
         """
         Convert the concatenation into a readable regular-expression string.
 
         Parentheses are added around child expressions only when their
         precedence is lower than the current node.
 
-        @return: The concatenated regex string representation.
+        Returns:
+            str: The concatenated regex string representation.
         """
         left = str(self.left)
         right = str(self.right)
@@ -50,12 +62,18 @@ class ConcatNode(BinaryNode):
 
         return f"{left}{right}"
 
-    def __eq__(self, other: object) -> bool:
+    def __eq__(
+            self,
+            other: object
+        ) -> bool:
         """
         Determine if this concatenation node is equal to another concatenation node.
 
-        @param other: The object to compare against.
-        @return: True if the other object is a ConcatNode with the same left and right children, False otherwise.
+        Args:
+            other (object): The object to compare against.
+
+        Returns:
+            bool: True if the other object is a ConcatNode with the same left and right children, False otherwise.
         """
         if not isinstance(other, ConcatNode):
             return False

@@ -23,74 +23,102 @@ class RegularExpression:
 
     The internal RegexNode tree is responsible for preserving expression
     structure and correctly formatting the expression as a string.
-    @param root: The root node of the regex expression tree.
+
+    Attributes:
+        root (RegexNode): The root node of the regex expression tree.
     """
     root: RegexNode
 
-    def __init__(self, root: RegexNode) -> None:
+    def __init__(
+            self,
+            root: RegexNode
+        ) -> None:
         """
         Create a RegularExpression with the given RegexNode as its root.
 
         DO NOT CALL THIS CONSTRUCTOR DIRECTLY. Use the factory methods instead.
 
-        @param root: The root node of the regular expression tree.
-        @raises TypeError: If root is not an instance of RegexNode.
+        Args:
+            root (RegexNode): The root node of the regular expression tree.
+
+        Raises:
+            TypeError: If root is not an instance of RegexNode.
         """
         if not isinstance(root, RegexNode):
             raise TypeError("Root must be an instance of RegexNode")
-        
+
         self.root = root
 
     # ----------- Factory Methods -----------
 
     @classmethod
-    def a(cls) -> 'RegularExpression':
+    def a(
+            cls
+        ) -> 'RegularExpression':
         """
         Create a regular expression representing the symbol 'a'.
 
-        @return: A RegularExpression containing the symbol 'a'.
+        Returns:
+            RegularExpression: A RegularExpression containing the symbol 'a'.
         """
         return cls(SymbolNode(RegexSymbol.A))
 
     @classmethod
-    def b(cls) -> 'RegularExpression':
+    def b(
+            cls
+        ) -> 'RegularExpression':
         """
         Create a regular expression representing the symbol 'b'.
 
-        @return: A RegularExpression containing the symbol 'b'.
+        Returns:
+            RegularExpression: A RegularExpression containing the symbol 'b'.
         """
         return cls(SymbolNode(RegexSymbol.B))
 
     @classmethod
-    def epsilon(cls) -> 'RegularExpression':
+    def epsilon(
+            cls
+        ) -> 'RegularExpression':
         """
         Create a regular expression representing the empty string.
 
-        @return: A RegularExpression containing the empty string.
+        Returns:
+            RegularExpression: A RegularExpression containing the empty string.
         """
         return cls(SymbolNode(RegexSymbol.EPSILON))
 
     @classmethod
-    def empty_set(cls) -> 'RegularExpression':
+    def empty_set(
+            cls
+        ) -> 'RegularExpression':
         """
         Create a regular expression representing the empty set.
 
-        @return: A RegularExpression containing the empty set.
+        Returns:
+            RegularExpression: A RegularExpression containing the empty set.
         """
         return cls(SymbolNode(RegexSymbol.EMPTY_SET))
 
     # ---------- Regex Operations -----------
 
-    def union(self, other: 'RegularExpression') -> 'RegularExpression':
+    def union(
+            self,
+            other: 'RegularExpression'
+        ) -> 'RegularExpression':
         """
         Create the union of this regular expression and another expression.
 
         The operation performs basic simplification using the identities:
         EmptySet U R = R, R U EmptySet = R, and R U R = R.
 
-        @param other: The RegularExpression to union with this expression.
-        @return: A RegularExpression representing the union of the two expressions.
-        @raises TypeError: If other is not an instance of RegularExpression.
+        Args:
+            other (RegularExpression): The RegularExpression to union with this expression.
+
+        Raises:
+            TypeError: If other is not an instance of RegularExpression.
+
+        Returns:
+            RegularExpression: A RegularExpression representing the union of the two expressions.
         """
         if not isinstance(other, RegularExpression):
             raise TypeError("Other must be an instance of RegularExpression")
@@ -111,7 +139,10 @@ class RegularExpression:
             UnionNode(self.root, other.root)
         )
 
-    def concatenate(self, other: 'RegularExpression') -> 'RegularExpression':
+    def concatenate(
+            self,
+            other: 'RegularExpression'
+        ) -> 'RegularExpression':
         """
         Concatenate this regular expression with another expression.
 
@@ -119,9 +150,14 @@ class RegularExpression:
         EmptySet . R = EmptySet, R . EmptySet = EmptySet,
         epsilon . R = R, and R . epsilon = R.
 
-        @param other: The RegularExpression to concatenate after this expression.
-        @return: A RegularExpression representing the concatenation.
-        @raises TypeError: If other is not an instance of RegularExpression.
+        Args:
+            other (RegularExpression): The RegularExpression to concatenate after this expression.
+
+        Raises:
+            TypeError: If other is not an instance of RegularExpression.
+
+        Returns:
+            RegularExpression: A RegularExpression representing the concatenation.
         """
         if not isinstance(other, RegularExpression):
             raise TypeError("Other must be an instance of RegularExpression")
@@ -142,14 +178,17 @@ class RegularExpression:
             ConcatNode(self.root, other.root)
         )
 
-    def kleene_star(self) -> 'RegularExpression':
+    def kleene_star(
+            self
+        ) -> 'RegularExpression':
         """
         Apply the Kleene star operation to this regular expression.
 
         The operation performs basic simplification using the identities:
         EmptySet* = epsilon, epsilon* = epsilon, and (R*)* = R*.
 
-        @return: A RegularExpression representing the Kleene star of this expression.
+        Returns:
+            RegularExpression: A RegularExpression representing the Kleene star of this expression.
         """
         # Empty set* = epsilon
         if self.is_empty_set():
@@ -159,7 +198,7 @@ class RegularExpression:
         if self.is_epsilon():
             return RegularExpression.epsilon()
 
-        #(R*)* = R*
+        # (R*)* = R*
         if isinstance(self.root, StarNode):
             return self
 
@@ -169,22 +208,28 @@ class RegularExpression:
 
     # ---------- Helper Methods -----------
 
-    def is_epsilon(self) -> bool:
+    def is_epsilon(
+            self
+        ) -> bool:
         """
         Determine whether this regular expression represents only epsilon.
 
-        @return: True if the root is the epsilon symbol, False otherwise.
+        Returns:
+            bool: True if the root is the epsilon symbol, False otherwise.
         """
         return (
             isinstance(self.root, SymbolNode)
             and self.root.symbol == RegexSymbol.EPSILON
         )
 
-    def is_empty_set(self) -> bool:
+    def is_empty_set(
+            self
+        ) -> bool:
         """
         Determine whether this regular expression represents the empty set.
 
-        @return: True if the root is the empty set symbol, False otherwise.
+        Returns:
+            bool: True if the root is the empty set symbol, False otherwise.
         """
         return (
             isinstance(self.root, SymbolNode)
@@ -193,17 +238,23 @@ class RegularExpression:
 
     # ---------- String Representation -----------
 
-    def __str__(self) -> str:
+    def __str__(
+            self
+        ) -> str:
         """
         Convert this regular expression to its formatted string representation.
 
-        @return: The regular expression represented as a string.
+        Returns:
+            str: The regular expression represented as a string.
         """
         return str(self.root)
 
     # ---------- Equality Check -----------
 
-    def __eq__(self, other: object) -> bool:
+    def __eq__(
+            self,
+            other: object
+        ) -> bool:
         """
         Determine whether this regular expression is structurally equal to another.
 
@@ -211,21 +262,26 @@ class RegularExpression:
         trees. Individual RegexNode subclasses determine equality for their own
         structures.
 
-        @param other: The object to compare against.
-        @return: True if other is an equivalent RegularExpression tree,
-                 False otherwise.
+        Args:
+            other (object): The object to compare against.
+
+        Returns:
+            bool: True if other is an equivalent RegularExpression tree, False otherwise.
         """
         if not isinstance(other, RegularExpression):
             return False
-        
+
         return self.root == other.root
 
     # ---------- Representation -----------
 
-    def __repr__(self) -> str:
+    def __repr__(
+            self
+        ) -> str:
         """
         Return a developer-oriented representation of this regular expression.
 
-        @return: A string representation suitable for debugging.
+        Returns:
+            str: A string representation suitable for debugging.
         """
         return f"RegularExpression({repr(self.root)})"

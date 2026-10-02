@@ -13,12 +13,20 @@ class PrecedenceAware:
     be wrapped in parentheses during string formatting.
     """
 
-    def compare(self, other: 'PrecedenceAware') -> int:
+    def compare(
+            self,
+            other: 'PrecedenceAware'
+        ) -> int:
         """
         Compare this object against another precedence-aware node.
 
-        @param other: The other node to compare against.
-        @return: A relative precedence difference.
-        @raises NotImplementedError: If the subclass does not implement this method.
+        Args:
+            other (PrecedenceAware): The other node to compare against.
+
+        Raises:
+            NotImplementedError: If the subclass does not implement this method.
+
+        Returns:
+            int: A relative precedence difference.
         """
         raise NotImplementedError("Subclasses must implement compare method.")

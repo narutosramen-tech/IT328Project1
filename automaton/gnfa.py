@@ -1,3 +1,9 @@
+"""
+Authors: Jon Bailey, Thomas Hrycenko, and Tolu Olatunbosun
+
+All code was written by students and all comments were written by AI.
+"""
+
 from .nfa import NFA
 from .automaton import Automaton
 from .transition import Transition
@@ -5,16 +11,48 @@ from .state import State
 from regex import RegularExpression
 from typing import List
 
+
 class GNFA(Automaton):
+    """
+    An automaton whose transitions are labeled with regular expressions.
+
+    Attributes:
+        inner_states (list[State]): States copied from the original NFA.
+        new_start_state (State): Start state added when copying an NFA.
+        new_accept_state (State): Sole accepting state after copying an NFA.
+
+    These attributes are initialized by _copy_from_nfa.
+    """
+
     inner_states: list[State]
     new_start_state: State
     new_accept_state: State
 
-    def __init__(self) -> None:
+    def __init__(
+            self
+        ) -> None:
+        """
+        Initialize the empty state and transition collections.
+        """
         super().__init__()
 
-    def combine_transitions(self, transitions: List[Transition]) -> None:
-        if len(self.transitions) < 2:
+    def combine_transitions(
+            self,
+            transitions: List[Transition]
+        ) -> None:
+        """
+        Replace parallel transitions with one union-labeled transition.
+
+        Args:
+            transitions (List[Transition]): A nonempty list of transitions
+                in this automaton with matching start and end states.
+
+        Raises:
+            ValueError: If the supplied transitions have different endpoints
+                or a supplied transition is not in this automaton.
+        """
+        # No combination is needed if the automaton has fewer than two edges.
+        if len(transitions) < 2:
             return
 
         start = transitions[0].start
@@ -26,11 +64,13 @@ class GNFA(Automaton):
                     "All transitions being combined must have the same start and end state."
                 )
 
+        # Union preserves each alternative label between these endpoints.
         expression = transitions[0].expression
 
         for transition in transitions[1:]:
             expression = expression.union(transition.expression)
 
+        # Replace the original edges with their combined expression.
         for transition in transitions:
             self.transitions.remove(transition)
 
@@ -40,12 +80,29 @@ class GNFA(Automaton):
             expression
         )
 
-    def _copy_from_nfa(self, nfa: NFA) -> 'GNFA':
+    def _copy_from_nfa(
+            self,
+            nfa: NFA
+        ) -> 'GNFA':
+        """
+        Populate an empty GNFA with NFA states and transitions.
+
+        Add new boundary states, connect original accepting states to the
+        new accepting state, and normalize transitions between inner states.
+
+        Args:
+            nfa (NFA): The source automaton to copy.
+
+        Returns:
+            GNFA: This instance after its states and transitions are populated.
+        """
+        # Create separate states so acceptance changes do not affect the NFA.
         for state in nfa.states:
             self.add_state(
                 state.name,
                 state.is_accepting
             )
+        # Save the original states before adding the new boundary states.
         self.inner_states = list(self.states)
 
         for transition in nfa.transitions:
@@ -58,6 +115,7 @@ class GNFA(Automaton):
         if nfa.start_state is not None:
             self.start_state = self.get_state(nfa.start_state.name)
 
+        # Find two unused nonnegative state names for the boundary states.
         found_new_start = False
         found_new_accept = False
         i = 0
@@ -73,6 +131,7 @@ class GNFA(Automaton):
 
         self.start_state = self.new_start_state
 
+        # Transfer acceptance through epsilon edges to one accepting state.
         for state in self.states:
             if state != self.new_accept_state and state.is_accepting:
                 self.add_transition(
@@ -82,6 +141,8 @@ class GNFA(Automaton):
                 )
                 state.is_accepting = False
 
+        # Give each ordered pair of inner states exactly one edge, including
+        # self-loops. Empty-set labels represent missing transitions.
         for state_start in self.inner_states:
             for state_end in self.inner_states:
                 items = self.get_transitions(state_start.name, state_end.name)
@@ -93,8 +154,19 @@ class GNFA(Automaton):
         return self
 
     @classmethod
-    def from_nfa(cls, nfa: NFA) -> 'GNFA':
+    def from_nfa(
+            cls,
+            nfa: NFA
+        ) -> 'GNFA':
+        """
+        Create an instance and populate it from the supplied NFA.
+
+        Args:
+            nfa (NFA): The source automaton to copy.
+
+        Returns:
+            GNFA: A new instance populated by _copy_from_nfa.
+        """
         gnfa = cls()
         gnfa._copy_from_nfa(nfa)
         return gnfa
-    

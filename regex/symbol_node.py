@@ -20,28 +20,41 @@ class SymbolNode(RegexNode):
     symbol: RegexSymbol
     precedence: int = 4
 
-    def __init__(self, symbol: RegexSymbol) -> None:
+    def __init__(
+            self,
+            symbol: RegexSymbol
+        ) -> None:
         """
         Create a symbol node from a regex symbol.
 
-        @param symbol: The symbol this node should represent.
+        Args:
+            symbol (RegexSymbol): The symbol this node should represent.
         """
         self.symbol = symbol
 
-    def __str__(self) -> str:
+    def __str__(
+            self
+        ) -> str:
         """
         Return the textual representation of this symbol.
 
-        @return: The underlying regex symbol string.
+        Returns:
+            str: The underlying regex symbol string.
         """
         return str(self.symbol)
 
-    def __eq__(self, other: object) -> bool:
+    def __eq__(
+            self,
+            other: object
+        ) -> bool:
         """
         Determine if this symbol node is equal to another symbol node.
 
-        @param other: The object to compare against.
-        @return: True if the other object is a SymbolNode with the same symbol, False otherwise.
+        Args:
+            other (object): The object to compare against.
+
+        Returns:
+            bool: True if the other object is a SymbolNode with the same symbol, False otherwise.
         """
         if not isinstance(other, SymbolNode):
             return False

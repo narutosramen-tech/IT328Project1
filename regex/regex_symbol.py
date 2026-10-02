@@ -30,10 +30,13 @@ class RegexSymbol(Enum):
     # The symbol used to represent the empty set.
     EMPTY_SET = "es"
 
-    def __str__(self):
+    def __str__(
+            self
+        ):
         """
         Return the string value stored by the enum member.
 
-        @return: The raw symbol text used by the regex representation.
+        Returns:
+            str: The raw symbol text used by the regex representation.
         """
         return self.value

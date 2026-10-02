@@ -13,11 +13,16 @@ class Stringable:
     string representation through __str__.
     """
 
-    def __str__(self) -> str:
+    def __str__(
+            self
+        ) -> str:
         """
         Return the object in a human-readable string form.
 
-        @return: A string representation of the regular-expression object.
-        @raises NotImplementedError: If the subclass does not override this method.
+        Raises:
+            NotImplementedError: If the subclass does not override this method.
+
+        Returns:
+            str: A string representation of the regular-expression object.
         """
         raise NotImplementedError("Subclasses must implement __str__ method.")

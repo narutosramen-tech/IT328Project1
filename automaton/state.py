@@ -10,25 +10,31 @@ class State:
     Represents a state in an automaton.
 
     Attributes:
-        name(int): The name of the state, e.g. q0, q11, qNumber
-        is_accepting(bool): Whether the state is an accepting state or not.
+        name (int): The name of the state, e.g. q0, q11, qNumber
+        is_accepting (bool): Whether the state is an accepting state or not.
     """
     name: int
     is_accepting: bool
 
-    def __init__(self, name: int, is_accepting: bool = False) -> None:
+    def __init__(
+            self,
+            name: int,
+            is_accepting: bool = False
+        ) -> None:
         """
-        Create a state with the given numberic name and acceptance status.
+        Create a state with the given numeric name and acceptance status.
 
         Args:
             name (int): The numeric identifier of the state.
             is_accepting (bool, optional): True if the state is accepting,
-            False otherwise. Defaults to False.
+                False otherwise. Defaults to False.
         """
         self.name = name
         self.is_accepting = is_accepting
 
-    def __str__(self) -> str:
+    def __str__(
+            self
+        ) -> str:
         """
         Return the state in the assignment's required string format.
 
@@ -43,7 +49,10 @@ class State:
             result += "f"
         return result
 
-    def __eq__(self, other: object) -> bool:
+    def __eq__(
+            self,
+            other: object
+        ) -> bool:
         """
         Determine whether this state is equal to another state.
 
@@ -55,14 +64,16 @@ class State:
             other (object): The object to compare against.
 
         Returns:
-            bool: True if the other State has teh same numeric name,
+            bool: True for the same numeric name, False for a different name;
                 otherwise NotImplemented for unsupported types.
         """
         if not isinstance(other, State):
             return NotImplemented
         return self.name == other.name
 
-    def __hash__(self) -> int:
+    def __hash__(
+            self
+        ) -> int:
         """
         Return a hash value based on the state's numeric name.
 

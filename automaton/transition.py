@@ -11,23 +11,24 @@ from regex import RegularExpression
 class Transition:
     """
     Represents a transition between two states in an automaton.
-    
+
     Attributes:
-        start(State): The start state of the transition.
-        end(State): The end state of the transition.
-        expression(RegularExpression): The RegularExpression required to take the transition.
+        start (State): The start state of the transition.
+        end (State): The end state of the transition.
+        expression (RegularExpression): The RegularExpression required to take the transition.
     """
     start: State
     end: State
     expression: RegularExpression
 
-    def __init__(self, start: State, end: State, expression: RegularExpression) -> None:
+    def __init__(
+            self,
+            start: State,
+            end: State,
+            expression: RegularExpression
+        ) -> None:
         """
         Create a transition between two states.
-
-        @param start: The state where the transition begins.
-        @param end: The state where the transition ends.
-        @param expression: The regular expression labelling the transition.
 
         Args:
             start (State): The state where the transition begins.
@@ -38,8 +39,12 @@ class Transition:
         self.end = end
         self.expression = expression
 
-    def __eq__(self, other: object) -> bool:
-        """Determine whether this transition is equal to another transition.
+    def __eq__(
+            self,
+            other: object
+        ) -> bool:
+        """
+        Determine whether this transition is equal to another transition.
 
         Two transitions are equal when they have the same starting state,
         ending state, and regular expression label.
@@ -48,19 +53,21 @@ class Transition:
             other (object): The object to compare against
 
         Returns:
-            bool: True if the other object is an equivalent Transition,
+            bool: True for an equivalent Transition, False for a different one;
                 otherwise NotImplemented for unsupported types.
         """
         if not isinstance(other, Transition):
             return NotImplemented
-        
+
         return (
             self.start == other.start
             and self.end == other.end
             and self.expression == other.expression
         )
 
-    def __str__(self) -> str:
+    def __str__(
+            self
+        ) -> str:
         """
         Return the transition in the assignment's required string format.
 
@@ -69,4 +76,3 @@ class Transition:
                 q<start>-<expression>->q<end>.
         """
         return f"q{self.start.name}-{self.expression}->q{self.end.name}"
-    
