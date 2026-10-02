@@ -23,21 +23,32 @@ class RegexNode(Stringable, PrecedenceAware, ABC):
     precedence: int
 
     @abstractmethod
-    def __str__(self) -> str:
+    def __str__(
+            self
+        ) -> str:
         """
         Return the string representation of the regex node.
 
-        @return: The regex expression represented by this node.
+        Returns:
+            str: The regex expression represented by this node.
         """
         pass
 
-    def compare(self, other: 'RegexNode') -> int:
+    def compare(
+            self,
+            other: 'RegexNode'
+        ) -> int:
         """
         Compare the precedence of this node with another regex node.
 
-        @param other: The node to compare against.
-        @return: The difference in precedence between this node and other.
-        @raises ValueError: If other is not a RegexNode instance.
+        Args:
+            other (RegexNode): The node to compare against.
+
+        Raises:
+            ValueError: If other is not a RegexNode instance.
+
+        Returns:
+            int: The difference in precedence between this node and other.
         """
         if not isinstance(other, RegexNode):
             raise ValueError("Can only compare with another RegexNode.")

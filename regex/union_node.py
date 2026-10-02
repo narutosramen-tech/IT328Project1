@@ -21,29 +21,47 @@ class UnionNode(BinaryNode):
 
     precedence: int = 1
 
-    def __init__(self, left: RegexNode, right: RegexNode) -> None:
+    def __init__(
+            self,
+            left: RegexNode,
+            right: RegexNode
+        ) -> None:
         """
         Create a union node between two regex expressions.
 
-        @param left: The left-hand branch of the union.
-        @param right: The right-hand branch of the union.
+        Args:
+            left (RegexNode): The left-hand branch of the union.
+            right (RegexNode): The right-hand branch of the union.
+
+        Raises:
+            ValueError: If either child is None.
+            TypeError: If either child is not a RegexNode instance.
         """
         super().__init__(left, right)
 
-    def __str__(self) -> str:
+    def __str__(
+            self
+        ) -> str:
         """
         Return the regex string for a union expression.
 
-        @return: The union formatted as left U right.
+        Returns:
+            str: The union formatted as left U right.
         """
         return f"{self.left}U{self.right}"
 
-    def __eq__(self, other: object) -> bool:
+    def __eq__(
+            self,
+            other: object
+        ) -> bool:
         """
         Determine if this union node is equal to another union node.
 
-        @param other: The object to compare against.
-        @return: True if the other object is a UnionNode containing the same two child expressions, regardless of order.
+        Args:
+            other (object): The object to compare against.
+
+        Returns:
+            bool: True if the other object is a UnionNode containing the same two child expressions, regardless of order.
         """
         if not isinstance(other, UnionNode):
             return False

@@ -24,14 +24,21 @@ class BinaryNode(RegexNode):
     right: RegexNode
     precedence: int
 
-    def __init__(self, left: RegexNode, right: RegexNode) -> None:
+    def __init__(
+            self,
+            left: RegexNode,
+            right: RegexNode
+        ) -> None:
         """
         Create a binary node for a pair of regex operands.
 
-        @param left: The left operand to attach to this node.
-        @param right: The right operand to attach to this node.
-        @raises ValueError: If either child is None.
-        @raises TypeError: If either child is not a RegexNode instance.
+        Args:
+            left (RegexNode): The left operand to attach to this node.
+            right (RegexNode): The right operand to attach to this node.
+
+        Raises:
+            ValueError: If either child is None.
+            TypeError: If either child is not a RegexNode instance.
         """
         if left is None or right is None:
             raise ValueError("Left and right children cannot be None")

@@ -22,13 +22,19 @@ class UnaryNode(RegexNode):
     child: RegexNode
     precedence: int
 
-    def __init__(self, child: RegexNode) -> None:
+    def __init__(
+            self,
+            child: RegexNode
+        ) -> None:
         """
         Create a unary regex node around a single child expression.
 
-        @param child: The regex node to wrap.
-        @raises ValueError: If the child is None.
-        @raises TypeError: If the child is not a RegexNode instance.
+        Args:
+            child (RegexNode): The regex node to wrap.
+
+        Raises:
+            ValueError: If the child is None.
+            TypeError: If the child is not a RegexNode instance.
         """
         if child is None:
             raise ValueError("Child node cannot be None")

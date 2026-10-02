@@ -21,21 +21,32 @@ class StarNode(UnaryNode):
 
     precedence: int = 3
 
-    def __init__(self, child: RegexNode) -> None:
+    def __init__(
+            self,
+            child: RegexNode
+        ) -> None:
         """
         Create a star node around a unary regex operand.
 
-        @param child: The regex expression to apply the star operator to.
+        Args:
+            child (RegexNode): The regex expression to apply the star operator to.
+
+        Raises:
+            ValueError: If the child is None.
+            TypeError: If the child is not a RegexNode instance.
         """
         super().__init__(child)
 
-    def __str__(self) -> str:
+    def __str__(
+            self
+        ) -> str:
         """
         Return the regex string for the star operation.
 
         Parentheses are added to child expressions with lower precedence.
 
-        @return: The star-formatted regex string.
+        Returns:
+            str: The star-formatted regex string.
         """
         child_str = str(self.child)
 
@@ -44,12 +55,18 @@ class StarNode(UnaryNode):
 
         return f"{child_str}*"
 
-    def __eq__(self, other: object) -> bool:
+    def __eq__(
+            self,
+            other: object
+        ) -> bool:
         """
         Determine if this star node is equal to another star node.
 
-        @param other: The object to compare against.
-        @return: True if the other object is a StarNode with the same child, False otherwise.
+        Args:
+            other (object): The object to compare against.
+
+        Returns:
+            bool: True if the other object is a StarNode with the same child, False otherwise.
         """
         if not isinstance(other, StarNode):
             return False

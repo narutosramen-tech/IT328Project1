@@ -1,18 +1,58 @@
+"""
+Authors: Jon Bailey, Thomas Hrycenko, and Tolu Olatunbosun
+
+All code was written by students and all comments were written by AI.
+"""
+
 from regex import RegularExpression
 from .nfa import NFA
 from typing import Optional
 
+
 class NFAParser:
+    """
+    Parse state and transition tokens into an NFA.
+
+    Attributes:
+        input_string (str): The definition with outer whitespace removed.
+        nfa (Optional[NFA]): The current parsing result, or None before parsing.
+    """
+
     input_string: str
     nfa: Optional[NFA]
 
-    def __init__(self, string: str) -> None:
+    def __init__(
+            self,
+            string: str
+        ) -> None:
+        """
+        Store an NFA definition for parsing.
+
+        Args:
+            string (str): Comma-separated state and transition definitions.
+        """
         self.input_string = string.strip()
         self.nfa = None
 
-    def parse_state_token(self, token: str) -> tuple[int, bool]:
+    def parse_state_token(
+            self,
+            token: str
+        ) -> tuple[int, bool]:
+        """
+        Read a state name and its optional accepting-state marker.
+
+        Args:
+            token (str): A state token such as q0 or q2f.
+
+        Raises:
+            ValueError: If the token does not contain q followed by a
+                nonnegative integer and an optional f suffix.
+
+        Returns:
+            tuple[int, bool]: The numeric state name and acceptance status.
+        """
         token = token.strip()
-        
+
         if not token.startswith("q"):
             raise ValueError(f"Invalid state token: {token}")
 
@@ -25,7 +65,24 @@ class NFAParser:
 
         return int(number_text), is_accepting
 
-    def parse_transition_token(self, token: str) -> tuple[int, int, RegularExpression]:
+    def parse_transition_token(
+            self,
+            token: str
+        ) -> tuple[int, int, RegularExpression]:
+        """
+        Read the endpoints and label of a transition.
+
+        Args:
+            token (str): A transition token such as q0-a->q1.
+
+        Raises:
+            ValueError: If the syntax or state names are invalid, either
+                endpoint includes f, or the label is not a, b, or e.
+
+        Returns:
+            tuple[int, int, RegularExpression]: The starting state name,
+                ending state name, and expression representing the label.
+        """
         token = token.strip()
 
         if "->" not in token:
@@ -35,7 +92,7 @@ class NFAParser:
 
         if "-" not in left_half:
             raise ValueError(f"Invalid transition token: {token}")
-        
+
         begin_token, label = left_half.split("-", 1)
 
         start_name, start_accept = self.parse_state_token(begin_token)
@@ -55,10 +112,27 @@ class NFAParser:
             raise ValueError(
                 "Transition label must be 'a', 'b', or 'e' on an NFA."
             )
-        
+
         return start_name, end_name, expression
 
-    def parse(self) -> NFA:
+    def parse(
+            self
+        ) -> NFA:
+        """
+        Build an NFA from the stored comma-separated definition.
+
+        States must be declared before transitions that reference them.
+        State q0 becomes the start state, and an f suffix marks acceptance.
+        Each call creates a new NFA.
+
+        Raises:
+            ValueError: If a token is invalid, a state is duplicated, a
+                transition references an undeclared state, or the resulting
+                NFA fails structural validation.
+
+        Returns:
+            NFA: The parsed automaton.
+        """
         tokens = self.input_string.split(",")
 
         self.nfa = NFA()
