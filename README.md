@@ -224,15 +224,15 @@ The current convention uses the first two unused nonnegative state numbers for t
 - [ ] Multiple intermediate states.
 - [ ] Unreachable states.
 - [ ] No accepting path, producing `es`.
-- [ ] A language accepting the empty string.
+- [x] A language accepting the empty string.
 - [ ] Compare results against known expressions or language simulations.
 
 ### Integration and CLI tests
 
 - [x] NFA string → NFA object → GNFA object.
-- [ ] NFA string → GNFA output string → parsed GNFA object.
+- [x] NFA string → GNFA output string → parsed GNFA object.
 - [x] GNFA string → regex.
-- [ ] NFA string → GNFA string → regex.
+- [x] NFA string → GNFA string → regex.
 - [ ] Invalid input produces a useful error and nonzero exit code.
 - [ ] Standard input works.
 - [ ] File input works if implemented.
@@ -359,7 +359,7 @@ The following issues are intended to be copied into the team Kanban board.
 ### Quality and delivery
 
 - [ ] Add tests for every public class and method.
-- [ ] Add end-to-end tests.
+- [x] Add end-to-end tests covering multiple regex shapes and empty-set cases.
 - [x] Add regression tests for discovered NFA/GNFA bugs.
 - [ ] Run formatting and linting checks.
 - [ ] Add type checking if required by the course.

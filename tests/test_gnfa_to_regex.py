@@ -68,6 +68,21 @@ class TestGNFAToRegex(unittest.TestCase):
 
         self.assertEqual(str(regex), "a*")
 
+    def test_accepting_start_state_produces_epsilon(
+            self
+        ):
+        """
+        Verify that accepting only the empty string produces e, not None.
+        """
+        nfa = NFA()
+        nfa.add_state(0, True)
+        nfa.set_start_state(0)
+
+        regex = GNFAToRegexConverter.convert(NFAToGNFAConverter.convert(nfa))
+
+        self.assertEqual(str(regex), "e")
+        self.assertIsNotNone(regex)
+
     def test_no_accepting_path_produces_empty_set(
             self
         ):

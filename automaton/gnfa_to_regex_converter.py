@@ -36,7 +36,9 @@ class GNFAToRegexConverter:
 
         Returns:
             RegularExpression: The expression labeling the final start-to-
-                accepting path.
+                accepting path. This is `e` when the GNFA accepts only the
+                empty string and `es` when no accepting path exists; the
+                converter never returns None.
         """
         if not isinstance(gnfa, GNFA):
             raise TypeError("Regex conversion requires a GNFA instance.")
