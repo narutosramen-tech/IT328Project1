@@ -36,17 +36,41 @@ class State:
             self
         ) -> str:
         """
-        Return the state in the assignment's required string format.
+        Return the state's default string representation.
 
-        Accepting states are written with an 'f' suffix, such as q2f.
-        Non-accepting states are written without the suffix, such as q2.
+        This method is used automatically by Python's built-in ``str``
+        function and by string formatting. Accepting states include the
+        ``f`` suffix in this default representation.
 
         Returns:
-            str: The formatted state name.
+            str: The formatted state name, such as ``q2`` or ``q2f``.
+        """
+        return self.to_string()
+
+    def to_string(
+            self,
+            append_accepting: bool = True
+    ) -> str:
+        """
+        Format the state name with optional accepting-state information.
+
+        Accepting states include an ``f`` suffix when append_accepting is
+        True. Set append_accepting to False when only the numeric state name
+        is needed, such as when referring to an accepting state in a
+        transition endpoint.
+
+        Args:
+            append_accepting (bool, optional): Whether to append the ``f``
+                suffix when this state is accepting. Defaults to True.
+
+        Returns:
+            str: The formatted state name, such as ``q2`` or ``q2f``.
         """
         result = f"q{self.name}"
-        if self.is_accepting:
+
+        if self.is_accepting and append_accepting:
             result += "f"
+
         return result
 
     def __eq__(

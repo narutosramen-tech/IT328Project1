@@ -62,6 +62,17 @@ class ConcatNode(BinaryNode):
 
         return f"{left}{right}"
 
+    def __repr__(
+            self
+        ) -> str:
+        """
+        Return a developer-oriented representation of this concatenation node.
+
+        Returns:
+            str: A recursive representation of both concatenation operands.
+        """
+        return f"ConcatNode({repr(self.left)}, {repr(self.right)})"
+
     def __eq__(
             self,
             other: object

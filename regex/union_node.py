@@ -50,6 +50,17 @@ class UnionNode(BinaryNode):
         """
         return f"{self.left}U{self.right}"
 
+    def __repr__(
+            self
+        ) -> str:
+        """
+        Return a developer-oriented representation of this union node.
+
+        Returns:
+            str: A recursive representation of both union operands.
+        """
+        return f"UnionNode({repr(self.left)}, {repr(self.right)})"
+
     def __eq__(
             self,
             other: object

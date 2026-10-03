@@ -34,6 +34,21 @@ class RegexNode(Stringable, PrecedenceAware, ABC):
         """
         pass
 
+    @abstractmethod
+    def __repr__(
+            self
+        ) -> str:
+        """
+        Return a developer-oriented representation of the regex node.
+
+        Concrete node classes should include their type and recursively
+        represent their child nodes where applicable.
+
+        Returns:
+            str: An unambiguous representation of the regex node.
+        """
+        pass
+
     def compare(
             self,
             other: 'RegexNode'
