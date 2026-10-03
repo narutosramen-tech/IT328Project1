@@ -55,42 +55,43 @@ Recommended convention: normalize every GNFA so that its new start state is `q0`
 
 ### Phase 1: Finish the automaton model
 
-- [ ] Decide and document the GNFA start-state convention.
-- [ ] Fix `GNFA.combine_transitions()` so its early-return condition checks `len(transitions)`, not `len(self.transitions)`.
-- [ ] Validate that `combine_transitions()` receives a nonempty list of transitions with matching endpoints.
-- [ ] Validate constructor and method inputs where appropriate.
-- [ ] Ensure copied GNFA states do not mutate the original NFA states.
-- [ ] Ensure a GNFA has exactly one accepting state after conversion.
-- [ ] Ensure old accepting states are no longer marked accepting.
-- [ ] Ensure every required inner-state pair has exactly one transition.
-- [ ] Ensure missing edges are represented by `es`, including missing self-loops.
-- [ ] Ensure parallel NFA transitions are unioned into one GNFA transition.
+- [x] Use the first two unused nonnegative state numbers as the GNFA boundary states. This is the current convention pending instructor confirmation.
+- [x] Fix `GNFA.combine_transitions()` so its early-return condition checks `len(transitions)`, not `len(self.transitions)`.
+- [x] Validate that `combine_transitions()` receives a nonempty list of transitions with matching endpoints.
+- [x] Validate constructor and method inputs where appropriate.
+- [x] Ensure copied GNFA states do not mutate the original NFA states.
+- [x] Ensure a GNFA has exactly one accepting state after conversion.
+- [x] Ensure old accepting states are no longer marked accepting.
+- [x] Ensure every required inner-state pair has exactly one transition.
+- [x] Ensure missing edges are represented by `es`, including missing self-loops.
+- [x] Ensure parallel NFA transitions are unioned into one GNFA transition.
 
 ### Phase 2: Complete NFA parsing and formatting
 
-- [ ] Reject an empty input string and empty comma-separated tokens.
-- [ ] Reject malformed state names such as `x0`, `q`, `qf`, `q1ff`, and negative numbers.
-- [ ] Reject duplicate state declarations.
-- [ ] Reject transitions before all referenced states have been declared.
-- [ ] Reject accepting-state suffixes inside transition endpoints.
-- [ ] Reject unsupported NFA labels.
-- [ ] Require `q0` as the NFA start state.
-- [ ] Decide whether whitespace is accepted and apply that policy consistently.
-- [ ] Implement deterministic NFA formatting: states first, then transitions, no spaces, stable ordering.
-- [ ] Add an NFA format/parse round-trip test.
+- [x] Reject an empty input string and empty comma-separated tokens.
+- [x] Reject malformed state names such as `x0`, `q`, `qf`, `q1ff`, and negative numbers.
+- [x] Reject duplicate state declarations.
+- [x] Reject transitions before all referenced states have been declared.
+- [x] Reject accepting-state suffixes inside transition endpoints.
+- [x] Reject unsupported NFA labels.
+- [x] Require `q0` as the NFA start state.
+- [x] Accept and ignore whitespace throughout NFA input parsing.
+- [x] Implement deterministic NFA formatting: states first, then transitions, no spaces, stable insertion ordering.
+- [x] Add an NFA format/parse round-trip test.
 
 ### Phase 3: NFA-to-GNFA conversion
 
-- [ ] Implement or complete `nfa_to_gnfa_converter.py` as the public conversion API.
-- [ ] Copy states and transitions without sharing mutable state objects with the NFA.
-- [ ] Add a new start state with one epsilon transition to the old start state.
-- [ ] Add a new accepting state.
-- [ ] Add an epsilon transition from every old accepting state to the new accepting state.
-- [ ] Remove accepting status from all old accepting states.
-- [ ] Combine parallel transitions using union.
-- [ ] Add `es` transitions for missing inner-state pairs.
-- [ ] Format the resulting GNFA using the documented state-numbering convention.
-- [ ] Add conversion tests for one accepting state, multiple accepting states, an accepting start state, parallel edges, self-loops, and missing edges.
+- [x] Implement `nfa_to_gnfa_converter.py` as the public conversion API.
+- [x] Copy states and transitions without sharing mutable state objects with the NFA.
+- [x] Add a new start state with one epsilon transition to the old start state.
+- [x] Add a new accepting state.
+- [x] Add an epsilon transition from every old accepting state to the new accepting state.
+- [x] Remove accepting status from all old accepting states.
+- [x] Combine parallel transitions using union.
+- [x] Add `es` transitions for missing inner-state pairs.
+- [x] Format the resulting GNFA using the current first-two-free-numbers convention.
+- [x] Add conversion tests for boundary states, epsilon edges, parallel edges, missing edges, and preservation of the original NFA.
+- [ ] Add additional conversion tests for multiple accepting states, an accepting start state, and self-loops.
 
 ### Phase 4: GNFA regular-expression parsing
 
@@ -130,13 +131,13 @@ Recommended convention: normalize every GNFA so that its new start state is `q0`
 ### Phase 6: Output formatting
 
 - [ ] Complete `automaton_formatter.py`.
-- [ ] Format state names as `q<number>` and append `f` only to accepting states.
-- [ ] Format transitions as `q<start>-<expression>->q<end>`.
-- [ ] Never insert spaces into machine-readable output.
-- [ ] Use deterministic ordering for states and transitions.
-- [ ] Ensure parentheses are emitted only when required by precedence.
+- [x] Format state names as `q<number>` and append `f` only to accepting states.
+- [x] Format transitions as `q<start>-<expression>->q<end>`.
+- [x] Never insert spaces into machine-readable output.
+- [x] Use deterministic insertion ordering for states and transitions.
+- [x] Ensure parentheses are emitted only when required by precedence.
 - [ ] Ensure the final regular expression contains no spaces.
-- [ ] Add exact-output tests for representative examples.
+- [x] Add exact-output tests for representative NFA and regex examples.
 
 ### Phase 7: CLI/UI
 
@@ -159,13 +160,13 @@ Recommended convention: normalize every GNFA so that its new start state is `q0`
 
 ### Unit tests: data structures
 
-- [ ] State equality uses numeric names correctly.
-- [ ] State formatting handles accepting and non-accepting states.
-- [ ] Duplicate state names are rejected.
-- [ ] Transition equality and formatting work correctly.
-- [ ] Missing transition endpoints are rejected.
-- [ ] Removing a state removes all connected transitions.
-- [ ] Removing transitions behaves correctly for parallel edges.
+- [x] State equality uses numeric names correctly.
+- [x] State formatting handles accepting and non-accepting states.
+- [x] Duplicate state names are rejected.
+- [x] Transition equality and formatting work correctly.
+- [x] Missing transition endpoints are rejected.
+- [x] Removing a state removes all connected transitions.
+- [x] Removing transitions behaves correctly for parallel edges.
 
 ### Unit tests: regex operations
 
@@ -181,26 +182,26 @@ Recommended convention: normalize every GNFA so that its new start state is `q0`
 
 ### Unit tests: NFA parser
 
-- [ ] Parse a minimal valid NFA.
-- [ ] Parse multiple accepting states.
-- [ ] Parse epsilon transitions.
-- [ ] Parse self-loops.
-- [ ] Parse parallel transitions and preserve them separately.
-- [ ] Reject malformed states and transitions.
-- [ ] Reject undeclared endpoints.
-- [ ] Reject missing `q0`.
-- [ ] Reject duplicate declarations.
+- [x] Parse a minimal valid NFA.
+- [x] Parse multiple accepting states.
+- [x] Parse epsilon transitions.
+- [x] Parse self-loops.
+- [x] Parse parallel transitions and preserve them separately.
+- [x] Reject malformed states and transitions.
+- [x] Reject undeclared endpoints.
+- [x] Reject missing `q0`.
+- [x] Reject duplicate declarations.
 
 ### Unit tests: GNFA conversion
 
-- [ ] Add new start and accepting states.
-- [ ] Add epsilon edge from the new start to the old start.
-- [ ] Add epsilon edges from all old accepting states to the new accepting state.
-- [ ] Clear old acceptance flags.
-- [ ] Convert `q0-a->q1,q0-b->q1` to one `aUb` edge.
-- [ ] Add `es` edges for missing transitions.
+- [x] Add new start and accepting states.
+- [x] Add epsilon edge from the new start to the old start.
+- [x] Add epsilon edges from all old accepting states to the new accepting state.
+- [x] Clear old acceptance flags.
+- [x] Convert `q0-a->q1,q0-b->q1` to one `aUb` edge.
+- [x] Add `es` edges for missing transitions.
 - [ ] Preserve and combine self-loops.
-- [ ] Preserve the original NFA after conversion.
+- [x] Preserve the original NFA after conversion.
 - [ ] Verify that GNFA output can be parsed again.
 
 ### Unit tests: GNFA parser
@@ -228,7 +229,7 @@ Recommended convention: normalize every GNFA so that its new start state is `q0`
 
 ### Integration and CLI tests
 
-- [ ] NFA string → NFA object → GNFA object.
+- [x] NFA string → NFA object → GNFA object.
 - [ ] NFA string → GNFA output string → parsed GNFA object.
 - [ ] GNFA string → regex.
 - [ ] NFA string → GNFA string → regex.
@@ -282,11 +283,11 @@ The following issues are intended to be copied into the team Kanban board.
 
 ### Planning and design
 
-- [ ] Decide GNFA start-state and boundary-state numbering convention.
-- [ ] Decide whether whitespace is accepted in input.
+- [x] Establish the current GNFA boundary-state numbering convention: use the first two free numbers, pending instructor confirmation.
+- [x] Decide to accept and ignore whitespace in input.
 - [ ] Decide whether duplicate GNFA transitions are rejected or unioned.
 - [ ] Decide terminal-only CLI versus graphical/web UI.
-- [ ] Define exact output ordering requirements.
+- [x] Define current output ordering: states first, followed by transitions, preserving insertion order.
 - [ ] Document the complete input and output grammar.
 
 ### Core model
@@ -294,19 +295,19 @@ The following issues are intended to be copied into the team Kanban board.
 - [ ] Add stronger type and value validation to `State`.
 - [ ] Add stronger type validation to `Transition`.
 - [ ] Review `Automaton` mutation methods and error behavior.
-- [ ] Fix `GNFA.combine_transitions()` guard condition.
-- [ ] Add GNFA structural validation.
-- [ ] Add NFA structural validation for empty and malformed machines.
+- [x] Fix `GNFA.combine_transitions()` guard condition.
+- [x] Add GNFA structural validation.
+- [x] Add NFA structural validation for empty and malformed machines.
 
 ### NFA parsing and conversion
 
-- [ ] Finish NFA parser edge-case validation.
-- [ ] Implement NFA formatter.
-- [ ] Implement NFA-to-GNFA converter API.
-- [ ] Implement boundary-state creation and numbering policy.
-- [ ] Implement parallel-transition unioning.
-- [ ] Implement missing-edge insertion.
-- [ ] Add NFA and GNFA conversion tests.
+- [x] Finish NFA parser edge-case validation.
+- [x] Implement NFA string formatting.
+- [x] Implement NFA-to-GNFA converter API.
+- [x] Implement boundary-state creation and the current numbering policy.
+- [x] Implement parallel-transition unioning.
+- [x] Implement missing-edge insertion.
+- [x] Add NFA and GNFA conversion tests.
 
 ### Regex parsing
 
@@ -334,11 +335,11 @@ The following issues are intended to be copied into the team Kanban board.
 ### Formatting and I/O
 
 - [ ] Implement automaton formatter.
-- [ ] Implement GNFA formatter.
+- [x] Implement GNFA string formatting.
 - [ ] Implement final regex formatter integration.
-- [ ] Guarantee no spaces in machine-readable output.
-- [ ] Guarantee required parentheses only.
-- [ ] Add deterministic output ordering.
+- [x] Guarantee no spaces in machine-readable automaton output.
+- [x] Guarantee required parentheses only for the existing regex AST.
+- [x] Add deterministic insertion ordering.
 
 ### CLI/UI
 
@@ -359,12 +360,12 @@ The following issues are intended to be copied into the team Kanban board.
 
 - [ ] Add tests for every public class and method.
 - [ ] Add end-to-end tests.
-- [ ] Add regression tests for every discovered bug.
+- [x] Add regression tests for discovered NFA/GNFA bugs.
 - [ ] Run formatting and linting checks.
 - [ ] Add type checking if required by the course.
 - [ ] Remove debug output and temporary code.
-- [ ] Review imports so the project works consistently as a package and from the CLI.
-- [ ] Update this README as design decisions change.
+- [x] Review test imports so public classes are imported from the package API.
+- [x] Update this README as design decisions change.
 - [ ] Add final usage examples.
 - [ ] Verify the project from a clean checkout.
 

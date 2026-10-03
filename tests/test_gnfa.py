@@ -8,6 +8,7 @@ import unittest
 
 from automaton import GNFA
 from automaton import NFA
+from automaton import NFAToGNFAConverter
 from regex import RegularExpression
 
 
@@ -43,6 +44,20 @@ class TestGNFA(unittest.TestCase):
         self.assertEqual(gnfa.new_accept_state.name, 3)
         self.assertEqual(len(gnfa.get_accepting_states()), 1)
         self.assertEqual(gnfa.get_accepting_states()[0].name, 3)
+        self.assertTrue(gnfa.validate_complete())
+
+    def test_converter_wrapper_returns_gnfa(
+            self
+        ):
+        """
+        Verify that the public converter wrapper delegates to GNFA creation.
+        """
+        nfa = self.make_basic_nfa()
+        nfa.add_transition(0, 1, RegularExpression.a())
+
+        gnfa = NFAToGNFAConverter.convert(nfa)
+
+        self.assertIsInstance(gnfa, GNFA)
         self.assertTrue(gnfa.validate_complete())
 
     def test_conversion_adds_boundary_epsilon_transitions(
@@ -116,6 +131,15 @@ class TestGNFA(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             GNFA.from_nfa(nfa)
+
+    def test_non_nfa_conversion_input_is_rejected(
+            self
+        ):
+        """
+        Verify that GNFA conversion requires an NFA instance.
+        """
+        with self.assertRaises(TypeError):
+            GNFA.from_nfa(None)  # type: ignore[arg-type]
 
     def test_combine_transitions_rejects_empty_input(
             self

@@ -29,6 +29,15 @@ class State:
             is_accepting (bool, optional): True if the state is accepting,
                 False otherwise. Defaults to False.
         """
+        if not isinstance(name, int) or isinstance(name, bool):
+            raise TypeError("State name must be an integer.")
+
+        if name < 0:
+            raise ValueError("State name must be nonnegative.")
+
+        if not isinstance(is_accepting, bool):
+            raise TypeError("is_accepting must be a boolean.")
+
         self.name = name
         self.is_accepting = is_accepting
 

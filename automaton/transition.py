@@ -35,6 +35,12 @@ class Transition:
             end (State): The state where the transition ends.
             expression (RegularExpression): The regular expression labeling the transition.
         """
+        if not isinstance(start, State) or not isinstance(end, State):
+            raise TypeError("Transition endpoints must be State instances.")
+
+        if not isinstance(expression, RegularExpression):
+            raise TypeError("Transition expression must be a RegularExpression.")
+
         self.start = start
         self.end = end
         self.expression = expression

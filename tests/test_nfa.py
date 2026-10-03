@@ -51,6 +51,28 @@ class TestNFA(unittest.TestCase):
         with self.assertRaises(ValueError):
             nfa.add_state(0)
 
+    def test_invalid_state_name_type_is_rejected(
+            self
+        ):
+        """
+        Verify that state names must be integers.
+        """
+        nfa = NFA()
+
+        with self.assertRaises(TypeError):
+            nfa.add_state("0")  # type: ignore[arg-type]
+
+    def test_negative_state_name_is_rejected(
+            self
+        ):
+        """
+        Verify that state names cannot be negative.
+        """
+        nfa = NFA()
+
+        with self.assertRaises(ValueError):
+            nfa.add_state(-1)
+
     def test_add_valid_transitions(
             self
         ):
@@ -99,6 +121,17 @@ class TestNFA(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             nfa.add_transition(0, 2, RegularExpression.a())
+
+    def test_invalid_transition_expression_type_is_rejected(
+            self
+        ):
+        """
+        Verify that transition labels must be RegularExpression instances.
+        """
+        nfa = self.make_basic_nfa()
+
+        with self.assertRaises(TypeError):
+            nfa.add_transition(0, 1, "a")  # type: ignore[arg-type]
 
     def test_missing_start_state_fails_validation(
             self

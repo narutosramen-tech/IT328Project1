@@ -31,7 +31,11 @@ class NFAParser:
         Args:
             string (str): Comma-separated state and transition definitions.
         """
-        self.input_string = string.strip()
+        if not isinstance(string, str):
+            raise TypeError("NFA input must be a string.")
+
+        # Whitespace is insignificant in the machine-definition language.
+        self.input_string = "".join(string.split())
         self.nfa = None
 
     def parse_state_token(
@@ -133,6 +137,9 @@ class NFAParser:
         Returns:
             NFA: The parsed automaton.
         """
+        if not self.input_string:
+            raise ValueError("NFA input cannot be empty.")
+
         tokens = self.input_string.split(",")
 
         self.nfa = NFA()

@@ -86,6 +86,12 @@ class Automaton(ABC):
         Returns:
             State: The newly created state.
         """
+        if not isinstance(name, int) or isinstance(name, bool):
+            raise TypeError("State name must be an integer.")
+
+        if not isinstance(is_accepting, bool):
+            raise TypeError("is_accepting must be a boolean.")
+
         state = State(name, is_accepting)
 
         if state not in self.states:
@@ -107,6 +113,9 @@ class Automaton(ABC):
         Raises:
             ValueError: If no state with the specified name exists.
         """
+        if not isinstance(name, int) or isinstance(name, bool):
+            raise TypeError("State name must be an integer.")
+
         state = self.get_state(name)
 
         if state is None:
@@ -162,6 +171,14 @@ class Automaton(ABC):
         Returns:
             Transition: The newly created transition.
         """
+        if not isinstance(start_name, int) or isinstance(start_name, bool):
+            raise TypeError("Start state name must be an integer.")
+
+        if not isinstance(end_name, int) or isinstance(end_name, bool):
+            raise TypeError("End state name must be an integer.")
+
+        if not isinstance(expression, RegularExpression):
+            raise TypeError("Transition expression must be a RegularExpression.")
 
         start_state = self.get_state(start_name)
         end_state = self.get_state(end_name)
