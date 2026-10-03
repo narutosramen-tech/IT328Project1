@@ -43,6 +43,12 @@ regular expressions. The main packages are:
 - Use type annotations for parameters, attributes, and return values.
 - Use the built-in generic forms already used by the project, such as `list[State]` and `tuple[int, bool]`.
 - Keep imports at the top of the file and remove unused imports introduced by a change.
+- When a class is exported by a package `__init__.py`, import it through the
+  package’s public API in tests and external callers. For example, use
+  `from automaton import NFA` rather than `from automaton.nfa import NFA`.
+- Use relative or module-local imports inside implementation modules when
+  appropriate; the package-level API convention primarily applies to tests
+  and callers.
 - Keep lines readable; avoid dense one-line implementations when they reduce clarity.
 - Preserve the project’s existing line-ending and formatting behavior when possible.
 - Run `git diff --check` after editing.

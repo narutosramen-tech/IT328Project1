@@ -6,7 +6,7 @@ All code was written by students and all comments were written by AI.
 
 import unittest
 
-from automaton.nfa_parser import NFAParser
+from automaton import NFAParser
 
 
 class TestNFAParser(unittest.TestCase):
@@ -26,6 +26,34 @@ class TestNFAParser(unittest.TestCase):
         self.assertEqual(nfa.start_state.name, 0)
         self.assertEqual(len(nfa.get_accepting_states()), 1)
         self.assertEqual(str(nfa), "q0,q1f,q0-a->q1")
+
+    def test_parse_ignores_whitespace(
+            self
+        ):
+        """
+        Verify that whitespace can appear between definition components.
+        """
+        nfa = NFAParser(" q0, q1f, q0 - a -> q1 ").parse()
+
+        self.assertEqual(str(nfa), "q0,q1f,q0-a->q1")
+
+    def test_parser_rejects_non_string_input(
+            self
+        ):
+        """
+        Verify that the parser requires a string input definition.
+        """
+        with self.assertRaises(TypeError):
+            NFAParser(None).parse()  # type: ignore[arg-type]
+
+    def test_parser_rejects_empty_input(
+            self
+        ):
+        """
+        Verify that an empty definition is rejected.
+        """
+        with self.assertRaises(ValueError):
+            NFAParser("   ").parse()
 
     def test_parse_multiple_accepting_states(
             self

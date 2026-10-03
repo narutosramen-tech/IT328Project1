@@ -63,6 +63,9 @@ class NFA(Automaton):
         Returns:
             Transition: The newly created transition.
         """
+        if not isinstance(expression, RegularExpression):
+            raise TypeError("NFA transition expression must be a RegularExpression.")
+
         if (
             expression != RegularExpression.epsilon()
             and expression != RegularExpression.a()

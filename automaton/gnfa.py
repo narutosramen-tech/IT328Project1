@@ -102,8 +102,14 @@ class GNFA(Automaton):
             ValueError: If the supplied transitions have different endpoints
                 or a supplied transition is not in this automaton.
         """
+        if not isinstance(transitions, list):
+            raise TypeError("Transitions must be supplied as a list.")
+
         if not transitions:
             raise ValueError("At least one transition is required.")
+
+        if not all(isinstance(transition, Transition) for transition in transitions):
+            raise TypeError("All items must be Transition instances.")
 
         if any(transition not in self.transitions for transition in transitions):
             raise ValueError("All transitions must belong to this GNFA.")
@@ -171,8 +177,8 @@ class GNFA(Automaton):
                 transition.end.name,
                 transition.expression
             )
-
-        old_start_state = self.get_state(nfa.start_state.name)
+        if nfa.start_state is not None:
+            old_start_state = self.get_state(nfa.start_state.name)
 
         # Find two unused nonnegative state names for the boundary states.
         found_new_start = False
@@ -191,10 +197,11 @@ class GNFA(Automaton):
         self.start_state = self.new_start_state
 
         # Connect the new start state to the copied original start state.
-        self.add_transition(
-            self.new_start_state.name,
-            old_start_state.name,
-            RegularExpression.epsilon()
+        if old_start_state is not None:
+            self.add_transition(
+                self.new_start_state.name,
+                old_start_state.name,
+                RegularExpression.epsilon()
         )
 
         # Transfer acceptance through epsilon edges to one accepting state.
@@ -236,6 +243,9 @@ class GNFA(Automaton):
         Returns:
             GNFA: A new instance populated by _copy_from_nfa.
         """
+        if not isinstance(nfa, NFA):
+            raise TypeError("GNFA conversion requires an NFA instance.")
+
         gnfa = cls()
         gnfa._copy_from_nfa(nfa)
         return gnfa
