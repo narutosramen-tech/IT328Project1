@@ -91,7 +91,7 @@ Recommended convention: normalize every GNFA so that its new start state is `q0`
 - [x] Add `es` transitions for missing inner-state pairs.
 - [x] Format the resulting GNFA using the current first-two-free-numbers convention.
 - [x] Add conversion tests for boundary states, epsilon edges, parallel edges, missing edges, and preservation of the original NFA.
-- [ ] Add additional conversion tests for multiple accepting states, an accepting start state, and self-loops.
+- [x] Add additional conversion tests for multiple accepting states, an accepting start state, and self-loops.
 
 ### Phase 4: GNFA regular-expression parsing
 
