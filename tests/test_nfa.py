@@ -2,6 +2,7 @@
 Authors: Jon Bailey, Thomas Hrycenko, and Tolu Olatunbosun
 
 All code was written by students and all comments were written by AI.
+AI was asked about missing edge cases, or testing criteria, to verify thorough unit testing.
 """
 
 import unittest
