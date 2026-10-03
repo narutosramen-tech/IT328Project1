@@ -75,4 +75,4 @@ class Transition:
             str: The transition formatted as
                 q<start>-<expression>->q<end>.
         """
-        return f"q{self.start.name}-{self.expression}->q{self.end.name}"
+        return f"{self.start.to_string(False)}-{self.expression}->{self.end.to_string(False)}"

@@ -36,6 +36,57 @@ class GNFA(Automaton):
         """
         super().__init__()
 
+    def validate_complete(
+            self
+        ) -> bool:
+        """
+        Check the structural requirements of this GNFA.
+
+        A valid GNFA has a start state, exactly one accepting state, and
+        transitions whose endpoints belong to the GNFA. When the GNFA was
+        created from an NFA, every ordered pair of inner states must also
+        have exactly one transition.
+
+        Returns:
+            bool: True when the GNFA satisfies these structural requirements.
+        """
+        if self.start_state is None or self.start_state not in self.states:
+            return False
+
+        if len(self.get_accepting_states()) != 1:
+            return False
+
+        if not all(
+            transition.start in self.states
+            and transition.end in self.states
+            and isinstance(transition.expression, RegularExpression)
+            for transition in self.transitions
+        ):
+            return False
+
+        for state_start in getattr(self, "inner_states", []):
+            for state_end in getattr(self, "inner_states", []):
+                if len(self.get_transitions(state_start.name, state_end.name)) != 1:
+                    return False
+
+        return True
+
+    def __str__(
+            self
+        ) -> str:
+        """
+        Return the GNFA in comma-separated definition format.
+
+        States are listed before transitions. State and transition formatting
+        is delegated to their respective ``__str__`` methods.
+
+        Returns:
+            str: The serialized GNFA definition with no spaces.
+        """
+        definitions = [str(state) for state in self.states]
+        definitions.extend(str(transition) for transition in self.transitions)
+        return ",".join(definitions)
+
     def combine_transitions(
             self,
             transitions: List[Transition]
@@ -51,7 +102,13 @@ class GNFA(Automaton):
             ValueError: If the supplied transitions have different endpoints
                 or a supplied transition is not in this automaton.
         """
-        # No combination is needed if the automaton has fewer than two edges.
+        if not transitions:
+            raise ValueError("At least one transition is required.")
+
+        if any(transition not in self.transitions for transition in transitions):
+            raise ValueError("All transitions must belong to this GNFA.")
+
+        # No combination is needed if there is only one supplied edge.
         if len(transitions) < 2:
             return
 
@@ -96,6 +153,9 @@ class GNFA(Automaton):
         Returns:
             GNFA: This instance after its states and transitions are populated.
         """
+        if not nfa.validate_complete():
+            raise ValueError("Cannot create a GNFA from an incomplete NFA.")
+
         # Create separate states so acceptance changes do not affect the NFA.
         for state in nfa.states:
             self.add_state(
@@ -112,8 +172,7 @@ class GNFA(Automaton):
                 transition.expression
             )
 
-        if nfa.start_state is not None:
-            self.start_state = self.get_state(nfa.start_state.name)
+        old_start_state = self.get_state(nfa.start_state.name)
 
         # Find two unused nonnegative state names for the boundary states.
         found_new_start = False
@@ -130,6 +189,13 @@ class GNFA(Automaton):
             i += 1
 
         self.start_state = self.new_start_state
+
+        # Connect the new start state to the copied original start state.
+        self.add_transition(
+            self.new_start_state.name,
+            old_start_state.name,
+            RegularExpression.epsilon()
+        )
 
         # Transfer acceptance through epsilon edges to one accepting state.
         for state in self.states:
@@ -150,6 +216,9 @@ class GNFA(Automaton):
                     self.combine_transitions(items)
                 elif len(items) == 0:
                     self.add_transition(state_start.name, state_end.name, RegularExpression.empty_set())
+
+        if not self.validate_complete():
+            raise ValueError("The converted GNFA is structurally incomplete.")
 
         return self
 

@@ -4,13 +4,14 @@ Authors: Jon Bailey, Thomas Hrycenko, and Tolu Olatunbosun
 All code was written by students and all comments were written by AI.
 """
 
+from abc import ABC, abstractmethod
 from .state import State
 from .transition import Transition
 from regex import RegularExpression
 from typing import Optional
 
 
-class Automaton:
+class Automaton(ABC):
     """
     An implementation neutral automaton that can be either an NFA or a GNFA.
 
@@ -275,3 +276,25 @@ class Automaton:
             raise ValueError("State does not exist.")
 
         return [t for t in self.transitions if t.start == state and t.end == state]
+
+    @abstractmethod
+    def __str__(
+            self
+        ) -> str:
+        """
+        Return the automaton in its comma-separated definition format.
+
+        Concrete automaton types must list all state definitions first,
+        followed by all transition definitions. Individual states and
+        transitions are responsible for formatting their own representations.
+
+        Raises:
+            NotImplementedError: If a concrete automaton does not implement
+                this method.
+
+        Returns:
+            str: The serialized automaton definition.
+        """
+        raise NotImplementedError(
+            "Concrete automata must implement __str__."
+        )

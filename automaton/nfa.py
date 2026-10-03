@@ -26,6 +26,22 @@ class NFA(Automaton):
         """
         super().__init__()
 
+    def __str__(
+            self
+        ) -> str:
+        """
+        Return the NFA in comma-separated definition format.
+
+        States are listed before transitions. State and transition formatting
+        is delegated to their respective ``__str__`` methods.
+
+        Returns:
+            str: The serialized NFA definition with no spaces.
+        """
+        definitions = [str(state) for state in self.states]
+        definitions.extend(str(transition) for transition in self.transitions)
+        return ",".join(definitions)
+
     def add_transition(
             self,
             start_name: int,

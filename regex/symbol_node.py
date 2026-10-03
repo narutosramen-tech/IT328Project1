@@ -43,6 +43,17 @@ class SymbolNode(RegexNode):
         """
         return str(self.symbol)
 
+    def __repr__(
+            self
+        ) -> str:
+        """
+        Return a developer-oriented representation of this symbol node.
+
+        Returns:
+            str: A representation containing the node type and symbol.
+        """
+        return f"SymbolNode(RegexSymbol.{self.symbol.name})"
+
     def __eq__(
             self,
             other: object
