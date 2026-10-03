@@ -47,9 +47,9 @@ q0-aUb->q1
 
 ## Important representation decision
 
-The input format marks accepting states but has no explicit start-state marker. NFA input uses `q0` as the start state. The same convention must be made unambiguous for GNFA input.
+The input format marks accepting states but has no explicit start-state marker. NFA input uses `q0` as the start state. GNFA output therefore declares the new start state first, followed by inner states, and the sole accepting state last.
 
-Recommended convention: normalize every GNFA so that its new start state is `q0` and its sole accepting state is `q1f`. Original NFA states can be renumbered when necessary. If the team chooses another convention, document it and use it consistently in the formatter, GNFA parser, CLI, and tests.
+The current convention uses the first two unused nonnegative state numbers for the new start and accepting states. The serialized GNFA order—not the numeric names—identifies the boundaries. This remains pending instructor confirmation.
 
 ## Implementation roadmap
 
@@ -95,48 +95,48 @@ Recommended convention: normalize every GNFA so that its new start state is `q0`
 
 ### Phase 4: GNFA regular-expression parsing
 
-- [ ] Implement `gnfa_parser.py`.
-- [ ] Parse GNFA state and transition declarations.
-- [ ] Parse atomic labels: `a`, `b`, `e`, and `es`.
-- [ ] Parse parenthesized expressions.
-- [ ] Parse Kleene star.
-- [ ] Parse implicit concatenation.
-- [ ] Parse union with `U`.
-- [ ] Enforce precedence: star, concatenation, union.
-- [ ] Reject unmatched parentheses, repeated operators, missing operands, and invalid symbols.
-- [ ] Enforce one GNFA start state and one accepting state according to the selected convention.
-- [ ] Decide whether duplicate GNFA transitions are rejected or unioned, then test that policy.
-- [ ] Add parser round-trip tests for every supported expression shape.
+- [x] Implement `gnfa_parser.py`.
+- [x] Parse GNFA state and transition declarations.
+- [x] Parse atomic labels: `a`, `b`, `e`, and `es`.
+- [x] Parse parenthesized expressions.
+- [x] Parse Kleene star.
+- [x] Parse implicit concatenation.
+- [x] Parse union with `U`.
+- [x] Enforce precedence: star, concatenation, union.
+- [x] Reject unmatched parentheses, repeated operators, missing operands, and invalid symbols.
+- [x] Enforce one GNFA start state and one accepting state according to the selected convention.
+- [x] Reject duplicate GNFA transitions between the same ordered pair.
+- [x] Add parser round-trip tests for normalized GNFA output.
 
 ### Phase 5: State elimination
 
-- [ ] Implement `gnfa_to_regex_converter.py`.
-- [ ] Validate that the GNFA has a start state and exactly one accepting state.
-- [ ] Select an elimination order excluding the start and accepting states.
-- [ ] For each state `k`, update every pair `i`, `j` using:
+- [x] Implement `gnfa_to_regex_converter.py`.
+- [x] Validate that the GNFA has a start state and exactly one accepting state.
+- [x] Select an elimination order excluding the start and accepting states.
+- [x] For each state `k`, update every pair `i`, `j` using:
 
   ```text
   Rij = Rij U Rik(Rkk)*Rkj
   ```
 
-- [ ] Use regex operations instead of string concatenation.
-- [ ] Preserve existing direct paths while adding paths through the eliminated state.
-- [ ] Handle missing paths as `es`.
-- [ ] Handle self-loops through `(Rkk)*`.
-- [ ] Remove each eliminated state and its transitions safely.
-- [ ] Stop with only the start and accepting states remaining.
-- [ ] Return the start-to-accept expression, or `es` when no accepting path exists.
-- [ ] Add tests for direct paths, concatenation, union, loops, epsilon paths, multiple routes, and unreachable states.
+- [x] Use regex operations instead of string concatenation.
+- [x] Preserve existing direct paths while adding paths through the eliminated state.
+- [x] Handle missing paths as `es`.
+- [x] Handle self-loops through `(Rkk)*`.
+- [x] Remove each eliminated state and its transitions safely without mutating the input GNFA.
+- [x] Stop with only the start and accepting states remaining in the elimination calculation.
+- [x] Return the start-to-accept expression, or `es` when no accepting path exists.
+- [x] Add tests for direct paths, concatenation, loops, and unreachable states.
 
 ### Phase 6: Output formatting
 
-- [ ] Complete `automaton_formatter.py`.
+- [x] Automaton formatting is implemented through NFA.__str__() and GNFA.__str__().
 - [x] Format state names as `q<number>` and append `f` only to accepting states.
 - [x] Format transitions as `q<start>-<expression>->q<end>`.
 - [x] Never insert spaces into machine-readable output.
 - [x] Use deterministic insertion ordering for states and transitions.
 - [x] Ensure parentheses are emitted only when required by precedence.
-- [ ] Ensure the final regular expression contains no spaces.
+- [x] Ensure the final regular expression contains no spaces.
 - [x] Add exact-output tests for representative NFA and regex examples.
 
 ### Phase 7: CLI/UI
@@ -200,18 +200,18 @@ Recommended convention: normalize every GNFA so that its new start state is `q0`
 - [x] Clear old acceptance flags.
 - [x] Convert `q0-a->q1,q0-b->q1` to one `aUb` edge.
 - [x] Add `es` edges for missing transitions.
-- [ ] Preserve and combine self-loops.
+- [x] Preserve and combine self-loops, including deduplication of nested union alternatives.
 - [x] Preserve the original NFA after conversion.
-- [ ] Verify that GNFA output can be parsed again.
+- [x] Verify that GNFA output can be parsed again.
 
 ### Unit tests: GNFA parser
 
-- [ ] Parse a normalized GNFA.
-- [ ] Parse `a`, `b`, `e`, and `es` labels.
-- [ ] Parse union, concatenation, star, and nested parentheses.
-- [ ] Reject invalid expressions.
-- [ ] Reject invalid state declarations.
-- [ ] Reject invalid start/accepting-state structure.
+- [x] Parse a normalized GNFA.
+- [x] Parse `a`, `b`, `e`, and `es` labels.
+- [x] Parse union, concatenation, star, and nested parentheses.
+- [x] Reject invalid expressions.
+- [x] Reject invalid state declarations.
+- [x] Reject invalid start/accepting-state structure.
 
 ### Unit tests: state elimination
 
@@ -231,7 +231,7 @@ Recommended convention: normalize every GNFA so that its new start state is `q0`
 
 - [x] NFA string → NFA object → GNFA object.
 - [ ] NFA string → GNFA output string → parsed GNFA object.
-- [ ] GNFA string → regex.
+- [x] GNFA string → regex.
 - [ ] NFA string → GNFA string → regex.
 - [ ] Invalid input produces a useful error and nonzero exit code.
 - [ ] Standard input works.
@@ -285,16 +285,16 @@ The following issues are intended to be copied into the team Kanban board.
 
 - [x] Establish the current GNFA boundary-state numbering convention: use the first two free numbers, pending instructor confirmation.
 - [x] Decide to accept and ignore whitespace in input.
-- [ ] Decide whether duplicate GNFA transitions are rejected or unioned.
+- [x] Decide to reject duplicate GNFA transitions between the same ordered pair.
 - [ ] Decide terminal-only CLI versus graphical/web UI.
-- [x] Define current output ordering: states first, followed by transitions, preserving insertion order.
+- [x] Define current output ordering: new start first, inner states next, new accepting state last, followed by transitions.
 - [ ] Document the complete input and output grammar.
 
 ### Core model
 
-- [ ] Add stronger type and value validation to `State`.
-- [ ] Add stronger type validation to `Transition`.
-- [ ] Review `Automaton` mutation methods and error behavior.
+- [x] Add stronger type and value validation to `State`.
+- [x] Add stronger type validation to `Transition`.
+- [x] Review `Automaton` mutation methods and error behavior.
 - [x] Fix `GNFA.combine_transitions()` guard condition.
 - [x] Add GNFA structural validation.
 - [x] Add NFA structural validation for empty and malformed machines.
@@ -311,31 +311,31 @@ The following issues are intended to be copied into the team Kanban board.
 
 ### Regex parsing
 
-- [ ] Design regex grammar.
-- [ ] Implement tokenizer or character scanner.
-- [ ] Implement parser for atomic symbols.
-- [ ] Implement parser for parentheses.
-- [ ] Implement parser for Kleene star.
-- [ ] Implement parser for concatenation.
-- [ ] Implement parser for union.
-- [ ] Add malformed-regex error messages.
-- [ ] Add regex parser tests.
+- [x] Design regex grammar.
+- [x] Implement a character-scanning recursive-descent parser.
+- [x] Implement parser for atomic symbols.
+- [x] Implement parser for parentheses.
+- [x] Implement parser for Kleene star.
+- [x] Implement parser for concatenation.
+- [x] Implement parser for union.
+- [x] Add malformed-regex error messages.
+- [x] Add regex parser tests.
 
 ### State elimination
 
-- [ ] Implement elimination-order selection.
-- [ ] Implement the state-elimination recurrence.
-- [ ] Implement transition lookup and replacement helpers.
-- [ ] Handle self-loops.
-- [ ] Handle missing paths as `es`.
-- [ ] Remove eliminated states safely.
-- [ ] Return the final start-to-accept expression.
-- [ ] Add state-elimination unit tests.
+- [x] Implement elimination-order selection.
+- [x] Implement the state-elimination recurrence.
+- [x] Implement transition lookup and replacement helpers.
+- [x] Handle self-loops.
+- [x] Handle missing paths as `es`.
+- [x] Remove eliminated states safely.
+- [x] Return the final start-to-accept expression.
+- [x] Add state-elimination unit tests.
 
 ### Formatting and I/O
 
-- [ ] Implement automaton formatter.
-- [x] Implement GNFA string formatting.
+- [x] Automaton formatting is implemented through NFA.__str__() and GNFA.__str__().
+- [x] Implement GNFA string formatting with boundary states in normalized order.
 - [ ] Implement final regex formatter integration.
 - [x] Guarantee no spaces in machine-readable automaton output.
 - [x] Guarantee required parentheses only for the existing regex AST.

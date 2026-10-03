@@ -83,7 +83,20 @@ class GNFA(Automaton):
         Returns:
             str: The serialized GNFA definition with no spaces.
         """
-        definitions = [str(state) for state in self.states]
+        if (
+            hasattr(self, "new_start_state")
+            and hasattr(self, "new_accept_state")
+            and hasattr(self, "inner_states")
+        ):
+            states = [
+                self.new_start_state,
+                *self.inner_states,
+                self.new_accept_state,
+            ]
+        else:
+            states = self.states
+
+        definitions = [str(state) for state in states]
         definitions.extend(str(transition) for transition in self.transitions)
         return ",".join(definitions)
 

@@ -292,6 +292,33 @@ class TestRegularExpressions(unittest.TestCase):
         union_regex = regex1.union(concat_regex)
         self.assertEqual(str(union_regex), "aUba")
 
+    def test_nested_union_removes_duplicate_alternatives(
+            self
+        ):
+        """
+        Verify that nested unions flatten and remove duplicate alternatives.
+        """
+        regex1 = RegularExpression.a()
+        regex2 = RegularExpression.b()
+        nested_union = regex2.union(regex1)
+        union_regex = regex1.union(nested_union)
+
+        self.assertIn(str(union_regex), ["aUb", "bUa"])
+
+    def test_union_keeps_concat_and_star_operands_intact(
+            self
+        ):
+        """
+        Verify that concatenation and star remain individual union operands.
+        """
+        symbol = RegularExpression.a()
+        concatenation = RegularExpression.b().concatenate(symbol)
+        star = RegularExpression.b().kleene_star()
+
+        union_regex = symbol.union(concatenation).union(star)
+
+        self.assertEqual(str(union_regex), "aUbaUb*")
+
     def test_concat_does_not_use_parentheses(
             self
         ):

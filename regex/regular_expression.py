@@ -109,7 +109,8 @@ class RegularExpression:
         Create the union of this regular expression and another expression.
 
         The operation performs basic simplification using the identities:
-        EmptySet U R = R, R U EmptySet = R, and R U R = R.
+        EmptySet U R = R, R U EmptySet = R, and R U R = R. Nested union
+        operands are flattened so duplicate alternatives are not repeated.
 
         Args:
             other (RegularExpression): The RegularExpression to union with this expression.
@@ -123,21 +124,41 @@ class RegularExpression:
         if not isinstance(other, RegularExpression):
             raise TypeError("Other must be an instance of RegularExpression")
 
-        # Empty set U R = R
-        if self.is_empty_set():
-            return other
+        def collect_union_terms(
+                node: RegexNode
+            ) -> list[RegexNode]:
+            """Flatten nested union nodes into their individual terms."""
+            if isinstance(node, UnionNode):
+                return (
+                    collect_union_terms(node.left)
+                    + collect_union_terms(node.right)
+                )
 
-        # R U Empty set = R
-        if other.is_empty_set():
-            return self
+            return [node]
 
-        # R U R = R
-        if self == other:
-            return self
+        terms = collect_union_terms(self.root) + collect_union_terms(other.root)
+        unique_terms: list[RegexNode] = []
 
-        return RegularExpression(
-            UnionNode(self.root, other.root)
-        )
+        for term in terms:
+            expression = RegularExpression(term)
+
+            if expression.is_empty_set():
+                continue
+
+            if not any(expression == RegularExpression(existing) for existing in unique_terms):
+                unique_terms.append(term)
+
+        if not unique_terms:
+            return RegularExpression.empty_set()
+
+        result = RegularExpression(unique_terms[0])
+
+        for term in unique_terms[1:]:
+            result = RegularExpression(
+                UnionNode(result.root, term)
+            )
+
+        return result
 
     def concatenate(
             self,
