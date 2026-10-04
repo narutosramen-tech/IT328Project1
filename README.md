@@ -153,7 +153,7 @@ The current convention uses the first two unused nonnegative state numbers for t
 - [ ] Return a nonzero exit code for invalid input or conversion failures.
 - [ ] Add `--help` with syntax examples.
 - [ ] Add optional `--verbose` or `--debug` output without contaminating normal output.
-- [ ] Decide whether a graphical/web UI is required. A terminal CLI is sufficient unless the assignment specifically requires a graphical UI.
+- [x] Defer a graphical/web UI; a terminal CLI is sufficient for the current scope unless the assignment requires a graphical UI.
 - [ ] Add end-to-end CLI tests.
 
 ## Test plan
@@ -176,8 +176,8 @@ The current convention uses the first two unused nonnegative state numbers for t
 - [x] Kleene-star simplification.
 - [x] Precedence-aware parentheses.
 - [x] Equality behavior.
-- [ ] Parsing and formatting round trips.
-- [ ] More complex nested expressions.
+- [x] Parsing and formatting round trips through the GNFA parser and integration pipeline.
+- [x] More complex nested expressions.
 - [ ] Verify that simplification preserves the represented language.
 
 ### Unit tests: NFA parser
@@ -215,17 +215,17 @@ The current convention uses the first two unused nonnegative state numbers for t
 
 ### Unit tests: state elimination
 
-- [ ] Direct single-symbol path.
-- [ ] Direct epsilon path.
-- [ ] Two paths requiring union.
-- [ ] Two sequential edges requiring concatenation.
-- [ ] A loop requiring Kleene star.
-- [ ] A loop combined with an incoming and outgoing path.
-- [ ] Multiple intermediate states.
-- [ ] Unreachable states.
-- [ ] No accepting path, producing `es`.
+- [x] Direct single-symbol path.
+- [x] Direct epsilon path.
+- [x] Two paths requiring union.
+- [x] Two sequential edges requiring concatenation.
+- [x] A loop requiring Kleene star.
+- [x] A loop combined with an incoming and outgoing path.
+- [x] Multiple intermediate states.
+- [x] Unreachable states.
+- [x] No accepting path, producing `es`.
 - [x] A language accepting the empty string.
-- [ ] Compare results against known expressions or language simulations.
+- [x] Compare generated results against known regular-expression outputs.
 
 ### Integration and CLI tests
 
@@ -286,9 +286,9 @@ The following issues are intended to be copied into the team Kanban board.
 - [x] Establish the current GNFA boundary-state numbering convention: use the first two free numbers, pending instructor confirmation.
 - [x] Decide to accept and ignore whitespace in input.
 - [x] Decide to reject duplicate GNFA transitions between the same ordered pair.
-- [ ] Decide terminal-only CLI versus graphical/web UI.
+- [x] Use a terminal CLI rather than a graphical/web UI for the current scope.
 - [x] Define current output ordering: new start first, inner states next, new accepting state last, followed by transitions.
-- [ ] Document the complete input and output grammar.
+- [x] Document the complete input and output grammar.
 
 ### Core model
 
@@ -336,7 +336,7 @@ The following issues are intended to be copied into the team Kanban board.
 
 - [x] Automaton formatting is implemented through NFA.__str__() and GNFA.__str__().
 - [x] Implement GNFA string formatting with boundary states in normalized order.
-- [ ] Implement final regex formatter integration.
+- [x] Use `RegularExpression.__str__()` as the final regular-expression formatter.
 - [x] Guarantee no spaces in machine-readable automaton output.
 - [x] Guarantee required parentheses only for the existing regex AST.
 - [x] Add deterministic insertion ordering.
@@ -366,7 +366,7 @@ The following issues are intended to be copied into the team Kanban board.
 - [ ] Remove debug output and temporary code.
 - [x] Review test imports so public classes are imported from the package API.
 - [x] Update this README as design decisions change.
-- [ ] Add final usage examples.
+- [x] Add final usage examples.
 - [ ] Verify the project from a clean checkout.
 
 ## Definition of done
