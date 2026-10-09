@@ -3,3 +3,4 @@ DESCRIPTION.md export-ignore
 REPORT_IDEAS.md export-ignore
 .gitignore export-ignore
 .vscode export-ignore
+.gitattributes export-ignore
